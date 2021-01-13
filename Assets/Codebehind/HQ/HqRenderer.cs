@@ -80,6 +80,8 @@ public partial class HqRenderer : MonoBehaviour
     public static float lineY;
     [NonSerialized]
     public static float prevY;
+    [NonSerialized]
+    public static bool offroad;
 
 
     private void OnEnable()
@@ -256,13 +258,23 @@ public partial class HqRenderer : MonoBehaviour
     {
         DrawBackground();
         DrawObjects();
-       // if (speed < 0) speed = 0;
+        if (playerX < -1 || playerX > 1) offroad = true;
+        else offroad = false;
+        // if (speed < 0) speed = 0;
         float dur = 1f / this.TicksPerSecond;
         _t += Time.deltaTime;
         // 1 - ускорение, -1 - торможение, 0 - инерция ... 10, -10, 100 - ускорение/торможение/инерция по бездорожью
         if (Input.GetKey(KeyCode.UpArrow))
         {
             accel = 1;
+            if (offroad == true)
+            {
+                while (_t >= dur && speed > offroadmaxspeed)
+                {
+                    _t -= dur;
+                    speed = speed - 5;
+                }
+            }
             while (_t >= dur && speed < maxspeed)
             {
 
@@ -302,11 +314,11 @@ public partial class HqRenderer : MonoBehaviour
     {
         if (movement == 1) //ускорение
         {
-            if (playerX > -1 && playerX < 1)
-                speed += Convert.ToInt32(Math.Log(speed + 2));
-            else
+            if (offroad == false)
+                speed += Convert.ToInt32(Math.Log(speed + 1.9));
+            else if (offroad == true)
             {
-                if (speed == maxspeed) speed = speed - 5;
+                if (speed >= maxspeed) speed = speed - 5;
                 if (speed > offroadmaxspeed) speed = speed - 5;
                 if (speed < offroadmaxspeed) speed = speed + 2;
             }
@@ -321,6 +333,7 @@ public partial class HqRenderer : MonoBehaviour
             if (speed > 0) speed = speed -1;
             if (speed < 0) speed = 0;
         }
+           
     }
 
 
@@ -331,11 +344,14 @@ public partial class HqRenderer : MonoBehaviour
         //speed = 200;
         if (Input.GetKey(KeyCode.RightArrow) && speed != 0)
         {
-            playerX += 0.05f;
+            playerX = playerX + (speed / 100) * 0.02f;
             //spriteRenderer.sprite
-            
+
         }
-        if (Input.GetKey(KeyCode.LeftArrow) && speed != 0) playerX -= 0.05f;
+        if (Input.GetKey(KeyCode.LeftArrow) && speed != 0)
+            {
+            playerX = playerX - (speed / 100) * 0.02f;
+            }
         //if (Input.GetKey(KeyCode.DownArrow)) speed = -200;
         if (Input.GetKey(KeyCode.Tab)) speed *= 3;
         if (Input.GetKey(KeyCode.W)) cameraHeight += 100;

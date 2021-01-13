@@ -19,6 +19,6 @@ public class DebugText : MonoBehaviour
         Text debugmenu = GameObject.Find("Canvas/Debug").GetComponent<Text>();
         debugmenu.text = "Speed: " + HqRenderer.speed + "\n" + "playerX: " + HqRenderer.playerX +
             "\n" + "playerY:" + HqRenderer.playerY + "\n" + "trip: " + HqRenderer.trip + "\n" + "Accel Type: " + HqRenderer.accel + "\n" +
-            "Line Y: " + HqRenderer.lineY + "\n" + "Uphill: " + HqRenderer.uphill + "\n";
+            "Line Y: " + HqRenderer.lineY + "\n" + "Uphill: " + HqRenderer.uphill + "\n" +"Offroad: " + HqRenderer.offroad + "\n";
     }
 }
